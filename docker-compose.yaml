@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
+    volumes: 
+      - admdata:/var/lib/mysql 
+    networks:
+      - net
+
+  mysql:
+    image: mysql:5.7.36
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: localhost
+    volumes: 
+      - mydata:/var/lib/mysql 
+    networks:
+      - net
+
+  pgsql:
+    image: postgres:13.5
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: localhost
+    volumes:
+       - pgdata:/data/postgres
+    networks:
+      - net
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: localhost
+    ports:
+      - 27017:27017
+    volumes:
+       - modata:/data/postgres
+    networks:
+      - net
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+     - "6379:6379"
+    volumes:
+       - redata:/data/postgres
+    networks:
+      - net
+  
+
+networks:
+  net:
+
+volumes:
+    pgdata:
+    mydata:
+    admdata:
+    modata:
+    redata:
