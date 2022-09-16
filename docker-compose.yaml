@@ -7,8 +7,8 @@ services:
     restart: always
     ports:
       - 8888:8080
-    volumes: 
-      - admdata:/var/lib/mysql 
+    volumes:
+      - admdata:/var/lib/mysql
     networks:
       - net
 
@@ -19,8 +19,8 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: localhost
-    volumes: 
-      - mydata:/var/lib/mysql 
+    volumes:
+      - mydata:/var/lib/mysql
     networks:
       - net
 
@@ -33,7 +33,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: localhost
     volumes:
-       - pgdata:/data/postgres
+      - pgdata:/data/postgres
     networks:
       - net
 
@@ -46,7 +46,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-       - modata:/data/postgres
+      - modata:/data/postgres
     networks:
       - net
 
@@ -54,19 +54,28 @@ services:
     image: redis
     restart: always
     ports:
-     - "6379:6379"
+      - "6379:6379"
     volumes:
-       - redata:/data/postgres
+      - redata:/data/postgres
     networks:
       - net
-  
+
+  redis-sentinel:
+    image: bitnami/redis-sentinel:7.0
+    environment:
+      - REDIS_MASTER_HOST=redis
+    ports:
+      - '26379:26379'
+    networks:
+      - net
 
 networks:
   net:
 
+
 volumes:
-    pgdata:
-    mydata:
-    admdata:
-    modata:
-    redata:
+  pgdata:
+  mydata:
+  admdata:
+  modata:
+  redata:
