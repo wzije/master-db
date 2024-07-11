@@ -3,7 +3,8 @@ version: '3.8'
 services:
 
   adminer:
-    image: adminer
+    image: ./adminer/Dockerfile
+    container_name: adminer
     restart: always
     ports:
       - 8888:8080
@@ -14,9 +15,10 @@ services:
 
   mysql:
     image: mysql:5.7.36
+    container_name: mysql
     restart: always
     ports:
-      - 3306:3306
+      - 30306:3306
     environment:
       MYSQL_ROOT_PASSWORD: localhost
     volumes:
@@ -26,9 +28,10 @@ services:
 
   pgsql:
     image: postgres:13.5
+    container_name: postgresql
     restart: always
     ports:
-      - 5432:5432
+      - 50432:5432
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: localhost
@@ -40,34 +43,64 @@ services:
   mongo:
     image: mongo
     restart: always
+    container_name: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: localhost
     ports:
-      - 27017:27017
+      - 27020:27017
     volumes:
       - modata:/data/postgres
     networks:
       - net
 
-  redis:
-    image: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redata:/data/postgres
-    networks:
-      - net
+  # redis:
+  #   image: 'bitnami/redis:7.0'
+  #   container_name: redis_master
+  #   restart: always
+  #   user: root
+  #   ports:
+  #     - "6379:6379"
+  #   environment:
+  #     - REDIS_REPLICATION_MODE=master
+  #     - REDIS_PASSWORD=passcode
+  #   # command: redis-server --port 6379  --requirepass passcode  --masterauth passcode
+  #   volumes:
+  #     - redata:/data/postgres
+  #   networks:
+  #     - net
 
-  redis-sentinel:
-    image: bitnami/redis-sentinel:7.0
-    environment:
-      - REDIS_MASTER_HOST=redis
-    ports:
-      - '26379:26379'
-    networks:
-      - net
+  # redis-slave:
+  #   image: 'bitnami/redis:7.0'
+  #   container_name: redis_slave
+  #   restart: always
+  #   user: root
+  #   environment:
+  #     - REDIS_REPLICATION_MODE=slave
+  #     - REDIS_MASTER_HOST=redis
+  #     - REDIS_MASTER_PASSWORD=passcode
+  #     - REDIS_PASSWORD=passcode
+  #   # ports:
+  #     - "6380:6380"
+  #   volumes:
+  #     - redata:/data/postgres
+  #   # command: redis-server --port 6380 --slaveof redis_master 6379  --requirepass passcode  --masterauth passcode
+  #   networks:
+  #     - net
+
+  # redis-sentinel:
+  #   image: bitnami/redis-sentinel:7.0
+  #   container_name: redis_sentinel
+  #   user: root
+  #   environment:
+  #     - REDIS_MASTER_PASSWORD=passcode
+  #     - REDIS_MASTER_HOST=redis
+  #     - REDIS_MASTER_PORT_NUMBER=6379
+  #     - REDIS_MASTER_SET=redis_master
+  #   ports:
+  #     - '26379:26379'
+  #   networks:
+  #     - net
 
 networks:
   net:
